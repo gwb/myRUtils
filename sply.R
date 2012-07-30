@@ -65,7 +65,7 @@ sply(b, test.fn2, combine=2)
 
 "
 
-source("/Users/gwb/Hacks/Projects/RUtils/compose.R")
+source("/Users/gwb/Hacks/Projects/myRUtils/compose.R")
 
 sply <- function(data, fn, margins=2, combine=2){
   
@@ -94,6 +94,7 @@ sply <- function(data, fn, margins=2, combine=2){
   
   return(transformed_data) 
 }
+
 
 
 ### Example
