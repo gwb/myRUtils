@@ -1,9 +1,86 @@
 require(ggplot2)
 require(reshape2)
 require(grid)
+require(gridExtra)
 require(scales)
 
 theme_set(theme_bw())
+
+# Stacking plots in a grid
+stack_plots2 <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=NULL, axis.common=NULL, beautify=T){
+  
+  # Extract the common legen
+  tmp <- ggplot_gtable(ggplot_build(gs[[1]]))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+
+  # Applies add_opts to plots and beautify
+  if (beautify){
+    gs <- lapply(gs, function(x) x + custom_opts())
+  }
+  gs <- lapply(gs, function(x) x + add_opts())
+
+  # MAYBE: Removes individual legend
+  if (legend.common){
+    
+    gs <- lapply(gs, function(x) x + opts(legend.position="none"))
+    
+  }
+  
+  # MAYBE: Adds common title
+  if (length(title.common) > 0){
+    
+    title.common <- textGrob(paste("\n", title.common, sep=""), gp=gpar(fontface="bold", cex=1.5), hjust= 0.7)
+    title.space = 4
+    
+  }else{
+    title.common <- textGrob("")
+    title.space = 2
+  }
+
+  # MAYBE: Adds common axis label
+  if (length(axis.common) > 0){
+    
+    gs <- lapply(gs, function (x) x + xlab("") + ylab(""))
+    xlabel <- textGrob(paste(axis.common[1], "\n", sep=""), gp=gpar(fontface="bold"))
+    ylabel <- textGrob(paste("\n", axis.common[2], sep=""), gp=gpar(fontface="bold"), rot=90)
+    
+  }else{
+    xlabel <- textGrob("")
+    ylabel <- textGrob("")
+  }
+  
+  # Create the plots
+  gs <- c(gs, nrow=nrow, ncol=ncol)
+  main.grob <- do.call(arrangeGrob, gs)
+
+  # --- if a filepath has been specified, opens the output device
+  if(length(fout) > 0){
+    pdf(fout, width=17, height=10)
+  }
+
+  # --- the plotting part
+  if (length(legend.common)>0){
+      grid.arrange(title.common,
+                   arrangeGrob(ylabel, main.grob, legend, widths=unit.c(unit(2,"lines"), unit(1, "npc") - legend$width - unit(2,"lines"), legend$width), nrow=1),
+                   xlabel,
+                   heights=unit.c(unit(title.space,"lines"), unit(1,"npc") - unit(title.space,"lines") - unit(2, "lines"), unit(2,"lines")), nrow=3)
+  }else{
+      grid.arrange(title.common,
+                   arrangeGrob(ylabel, main.grob, widths=unit.c(unit(2,"lines"), unit(1, "npc") - unit(2,"lines")), nrow=1),
+                   xlabel,
+                   heights=unit.c(unit(title.space,"lines"), unit(1,"npc") - unit(title.space,"lines") - unit(2, "lines"), unit(2,"lines")), nrow=3)
+  }
+
+  
+  # --- closes the output device if specified
+  if(length(fout) > 0){
+    dev.off()
+  }
+  
+}
+
+
 
 # Stacking plots in a grid
 stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts){
