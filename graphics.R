@@ -7,7 +7,7 @@ require(scales)
 theme_set(theme_bw())
 
 # Stacking plots in a grid
-stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=NULL, axis.common=NULL, beautify=T){
+stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=F, axis.common=NULL, beautify=T){
   
   # Extract the common legen
   tmp <- ggplot_gtable(ggplot_build(gs[[1]]))
@@ -60,7 +60,7 @@ stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.
   }
 
   # --- the plotting part
-  if (length(legend.common)>0){
+  if (legend.common){
       grid.arrange(title.common,
                    arrangeGrob(ylabel, main.grob, legend, widths=unit.c(unit(2,"lines"), unit(1, "npc") - legend$width - unit(2,"lines"), legend$width), nrow=1),
                    xlabel,
