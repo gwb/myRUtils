@@ -7,7 +7,7 @@ require(scales)
 theme_set(theme_bw())
 
 # Stacking plots in a grid
-stack_plots2 <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=NULL, axis.common=NULL, beautify=T){
+stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=NULL, axis.common=NULL, beautify=T){
   
   # Extract the common legen
   tmp <- ggplot_gtable(ggplot_build(gs[[1]]))
@@ -80,36 +80,6 @@ stack_plots2 <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title
   
 }
 
-
-
-# Stacking plots in a grid
-stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts){
-  # example: stack_plots(list(g1, g2, g3), 2, 2, function (x) opts(legend.position="bottom"))
-
-  if(length(fout) > 0){
-    pdf(fout, width=17, height=10)
-  }
-
-  grid.newpage()
-  pushViewport(viewport(layout=grid.layout(nrow,ncol)))
-  vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
-
-  curr_col = 1
-  curr_row = 1
-  for (i in seq(1, length(gs))){
-    ng <- gs[[i]] + add_opts()
-    print(ng, vp=vplayout(curr_row,curr_col))
-    if (curr_col==ncol){
-      curr_col = 1
-      curr_row = curr_row + 1
-    }else{
-      curr_col = curr_col + 1
-    }
-  }
-  if(length(fout) > 0){
-    dev.off()
-  }
-}
 
 # A set of custom options for ggplot
 custom_opts <- function(...){
