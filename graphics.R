@@ -82,9 +82,9 @@ stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.
 
 
 # A set of custom options for ggplot
-custom_opts <- function(...){
+custom_opts <- function(..., xrot=90){
   opts(plot.title  = theme_text(vjust=1.5, face="bold"),
-       axis.text.x= theme_text(angle=90, hjust=0.2, vjust = 0.5, colour="#696565"),
+       axis.text.x= theme_text(angle=xrot, hjust=0.2, vjust = 0.5, colour="#696565"),
        axis.title.x = theme_text(vjust=0.2, face='bold'),
        axis.title.y = theme_text(vjust=0.2, face='bold', angle=90),
        axis.text.y = theme_text(colour="#696565"),
