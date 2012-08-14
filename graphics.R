@@ -10,9 +10,11 @@ theme_set(theme_bw())
 stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=F, axis.common=NULL, beautify=T){
   
   # Extract the common legen
-  tmp <- ggplot_gtable(ggplot_build(gs[[1]]))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
+  if(legend.common){
+    tmp <- ggplot_gtable(ggplot_build(gs[[1]]))
+    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+    legend <- tmp$grobs[[leg]]
+  }
 
   # Applies add_opts to plots and beautify
   if (beautify){
