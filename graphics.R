@@ -7,7 +7,7 @@ require(scales)
 theme_set(theme_bw())
 
 # Stacking plots in a grid
-stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=F, axis.common=NULL, beautify=T){
+stack_plots <- function(gs, nrow, ncol, dim=c(17,10) ,fout=NULL, add_opts=function(){}, title.common=NULL, legend.common=F, axis.common=NULL, beautify=T, publish=T){
   
   # Extract the common legen
   if(legend.common){
@@ -20,6 +20,11 @@ stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.
   if (beautify){
     gs <- lapply(gs, function(x) x + custom_opts())
   }
+
+  if (publish){
+    gs <- lapply(gs, function(x) x + publication_opts())
+  }
+  
   gs <- lapply(gs, function(x) x + add_opts())
 
   # MAYBE: Removes individual legend
@@ -58,7 +63,7 @@ stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.
 
   # --- if a filepath has been specified, opens the output device
   if(length(fout) > 0){
-    pdf(fout, width=17, height=10)
+    pdf(fout, width=dim[1], height=dim[2])
   }
 
   # --- the plotting part
@@ -79,7 +84,6 @@ stack_plots <- function(gs, nrow, ncol, fout=NULL, add_opts=function(){}, title.
   if(length(fout) > 0){
     dev.off()
   }
-  
 }
 
 
@@ -95,6 +99,20 @@ custom_opts <- function(..., xrot=90){
        panel.border = theme_rect(size=1))
 }
 
+# A set of options for publication style plots
+# Features bigger text
+
+publication_opts <- function(..., xrot=90){
+  opts(plot.title  = theme_text(vjust=1.5, face="bold", size=20),
+       axis.text.x= theme_text(angle=xrot, hjust=0.2, vjust = 0.5, colour="#696565", size=15),
+       axis.title.x = theme_text(vjust=0.2, face='bold', size=18),
+       axis.title.y = theme_text(vjust=0.2, face='bold', angle=90, size=18),
+       axis.text.y = theme_text(colour="#696565", size=15),
+       legend.text = theme_text(colour="#505050", size=16),
+       legend.title = theme_text(size=18),
+       axis.ticks = theme_segment(colour="#696565", size=0.1),
+       panel.border = theme_rect(size=1))
+}
 
 # A re-implementation of an old function removed from ggplot 0.9
 scale_y_log2 <- function(...){

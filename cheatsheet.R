@@ -97,3 +97,36 @@ Description: calls the function fun with the arguments in lst. Very, very useful
 "
 
 do.call("cbind", list(c(1,2,3), c(1,2,3)))
+
+
+"
+ddply:  transform vs summarise vs custom
+
+Description: transform adds columns while summarise creates a new dtframe with only the specified columns
+a custom approch can also be used.
+
+dt:
+
+age     gender    weight   height
+...
+
+"
+
+# this expression computes the mean weight and height for people of the same age and gender,
+# and returns the same dt frame as before with *two extra columns*
+ddply(dt, c(age, gender), transform, m.weight=mean(weight), m.height=mean(height))
+
+# This computes the same columns as above, but returns a dataframe with *only these two new columns* 
+ddply(dt, c(age, gender), summarise, m.weight=mean(weight), m.height=mean(height))
+
+# note that we only have to worry about the "apply" part of split-apply-aggregate
+ddply(dt, c(age, gender), function(ndt) return(data.frame(foo = mean(ndt$weight), bar = ndt$age[1])))
+
+
+"
+suppressPackageStartupMessages
+
+description: loads a module without printing simple messages (still prints warnings)
+"
+
+suppressPackageStartupMessages(require(plyr))
